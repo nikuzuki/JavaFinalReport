@@ -31,4 +31,19 @@ class VerbDB{
     }
 
   }
+
+  public String search(String midashi){
+    String str = "";
+    for(Verb data: verbs){  // 拡張for文
+      if( (data.get_midashi().indexOf(midashi)) != -1 ){
+        str = data.get_translation();
+        break;
+      }
+    }
+    if(str.length() == 0)
+      str = midashi + " is not Found.";
+
+    return str;
+
+  }
 }
