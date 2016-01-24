@@ -1,20 +1,29 @@
 class Verb{
   private String midashi;     // 見出し語
-  private String translation; // 見出し語に対する説明
+  private String jidoushi;    // 自動詞
+  private String tadoushi;    // 他動詞
 
   public void set_midashi(String midashi){
     this.midashi = midashi;
   }
 
-  public void set_translation(String translation){
-    this.translation = translation;
+  public void set_jidoushi(String jidoushi){
+    this.jidoushi = jidoushi;
+  }
+
+  public void set_tadoushi(String tadoushi){
+    this.tadoushi = tadoushi;
   }
 
   public String get_midashi(){
     return this.midashi;
   }
 
-  public String get_translation(){
-    return this.translation;
+  public String get_tadoushi(){
+    return this.tadoushi;
+  }
+
+  public String get_jidoushi(){
+    return this.jidoushi;
   }
 }
