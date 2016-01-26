@@ -4,7 +4,7 @@ class VerbDB{
   private Verb[] verbs = new Verb[1035];  // 動詞辞書
 
   public VerbDB(){  // コンストラクタ
-    String filename = "doushi2.txt";
+    String filename = "doushi.txt";
 
     try{
       BufferedReader reader = new BufferedReader(new FileReader(filename));
@@ -22,7 +22,7 @@ class VerbDB{
         verbs[count] = new Verb();  // インスタンスを作成
         i = line.indexOf("@");      // "@"の位置を探す
         System.out.println("index  " + i);
-        verbs[count].set_midashi(line.substring(0, i)); // @前の見出しを渡す
+        verbs[count].set_midashi(line.substring(0, i - 1)); // @前の見出しを渡す
         System.out.println("length  " + line.length());
 
         i++;  // @の後の文字を指すためにインクリメント
@@ -82,28 +82,19 @@ class VerbDB{
   // ---見出しの検索---
   public String[] search(String midashi){ // 配列で返す
 
-    String str[] = {"undefined", "undefined"};  //[0]自動詞 [1]他動詞
+    String str[] = {"", ""};  //[0]自動詞 [1]他動詞
 
-    System.out.println("-------search-------\n");
-    for(Verb data: verbs){  // 拡張for文
-      if((data.get_midashi().indexOf(midashi)) != -1){
-        System.out.println("str[0] " + data.get_jidoushi());
-        System.out.println("str[1] " + data.get_tadoushi());
-        str[0] = data.get_jidoushi();
-        str[1] = data.get_tadoushi();
+    System.out.println("\n-------searching " + midashi + "-------\n");
 
-        if(str[0] != "undefined"){
+    for(int i = 0; i < this.verbs.length; i++){
+      if(this.verbs[i].get_midashi().indexOf(midashi) == 0){
+        System.out.println("match");
+        str[0] = this.verbs[i].get_jidoushi();
+        str[1] = this.verbs[i].get_tadoushi();
 
-          // System.out.println("way1 : " + str[0]);
-        }
-        if(str[1] != "undefined"){
-          // System.out.println("way2 : " + str[1]);
-        }
         break;
       }
     }
-    //if(str[0].length() == 0 && str[1].length() == 0)
-       // System.out.println(midashi + " is not found.");
 
     return str;
   }
@@ -111,21 +102,31 @@ class VerbDB{
   // ---見出しから自動詞検索---
   public String search_jidoushi(String midashi){
     String str = "";
-    for(Verb data: verbs){
-      if((data.get_midashi().indexOf(midashi)) != -1){
-        str = data.get_jidoushi();
+
+    System.out.println("\n-------searching jidoushi [" + midashi + "]-------\n");
+
+    for(int i = 0; i < this.verbs.length; i++){
+      if(this.verbs[i].get_midashi().indexOf(midashi) == 0){
+        System.out.println("match");
+        str = this.verbs[i].get_jidoushi();
+
         break;
       }
     }
+
     return str;
   }
 
   // ---見出しから他動詞検索---
   public String search_tadoushi(String midashi){
     String str = "";
-    for(Verb data: verbs){
-      if((data.get_midashi().indexOf(midashi)) != -1){
-        str = data.get_tadoushi();
+    System.out.println("\n-------searching tadoushi [" + midashi + "]-------\n");
+    
+    for(int i = 0; i < this.verbs.length; i++){
+      if(this.verbs[i].get_midashi().indexOf(midashi) == 0){
+        System.out.println("match");
+        str = this.verbs[i].get_tadoushi();
+
         break;
       }
     }
