@@ -4,61 +4,71 @@ class VerbDB{
   private Verb[] verbs = new Verb[1035];  // 動詞辞書
 
   public VerbDB(){  // コンストラクタ
-    String filename = "doushi.txt";
+    String filename = "doushi2.txt";
 
     try{
       BufferedReader reader = new BufferedReader(new FileReader(filename));
       String line;
       int index1, index2;  // '@'の位置
-      int i = 0;
-      String str1, str2;  // 自動詞他動詞判定用
+      int i = 0;           // 文字の位置
+      int count = 0;       // verbsの添字
+      String str;   // 自動詞他動詞判定用
+      String tmp = "";     // 一時的な文字列格納
+      char tmpCharAt;
 
-      while((line = reader.readLine()) != null){
-        str1 = "";
-        str2 = "";
-        verbs[i] = new Verb();
+      while((line = reader.readLine()) != null){  // ファイルの終わりまで繰り返す
+        System.out.println("No." + count);
+        System.out.println(line);
+        verbs[count] = new Verb();  // インスタンスを作成
+        i = line.indexOf("@");      // "@"の位置を探す
+        System.out.println("index  " + i);
+        verbs[count].set_midashi(line.substring(0, i)); // @前の見出しを渡す
+        System.out.println("length  " + line.length());
 
-        // @の前まで切り取り見出しへ
-        index1 = line.indexOf("@");
-        verbs[i].set_midashi(line.substring(0, index1 - 1));
+        i++;  // @の後の文字を指すためにインクリメント
+        str = line.substring(i, i + 3);
+        System.out.println("str " + str);
+        i = i + 4;  // @◯動詞の後の文字を指す
+        // ----- ここから自動詞/他動詞判定 -----
+        while(i < line.length()){ // 末尾まで繰り返す
 
-        // 自動詞か他動詞か調べる
-        index2 = line.indexOf("@", index1 + 1);
 
-        str1 = line.substring(index1 + 1, index1 + 4);
-        // System.out.println("str1: " + str1);
-        if (index2 == -1){
-          str2 = "empty";
-        } else {
-          str2 = line.substring(index2 + 1, index2 + 4);
-        }
-        // System.out.println("str2: " + str2);
+          tmpCharAt = line.charAt(i); // iが指している文字を格納
+          // System.out.println(tmpCharAt);
+          if(tmpCharAt != '@'){     // '@'以外を指してたら
+            tmp = tmp + tmpCharAt;  // tmpの後ろに追加
+          } else {                  // '@'を指していたら
+            // ----- setter -----
+            if(str.charAt(0) == '自'){     // strが自動詞なら
+              verbs[count].set_jidoushi(tmp);
+              tmp = "";
+            } else {
+              verbs[count].set_tadoushi(tmp);
+              tmp = "";
+            }
+            // ----- setter end -----
+            i++;                    // 次の文字を指す
+            str = line.substring(i, i + 3);
+            i = i + 3;
 
-        if(str1.indexOf("自動") == 0){  // 先頭に自動詞が来ている場合
-          if(str2.indexOf("他動") == 0){  // 他動詞がある場合
-            // System.out.println("jidou -> tadou");
-            verbs[i].set_jidoushi(line.substring(index1 + 1, index2 - 1));
-            verbs[i].set_tadoushi(line.substring(index2 + 1, line.length()));
-          } else {
-            // System.out.println("way1");
-            verbs[i].set_jidoushi(line.substring(index1 + 1));
-            verbs[i].set_tadoushi("undefined");
           }
-        } else {              // 先頭に他動詞が来ている場合
-          if(str2.indexOf("自動") == 0){  // 自動詞がある場合
-            // System.out.println("tadou -> jidou");
-            verbs[i].set_tadoushi(line.substring(index1 + 1, index2 - 1));
-            verbs[i].set_jidoushi(line.substring(index2 + 1, line.length()));
+          i++;  // 次の文字へ
+        }
+        if(tmp != ""){
+          if(str.charAt(0) == '自'){
+            verbs[count].set_jidoushi(tmp);
+            tmp = "";
           } else {
-            // System.out.println("way2");
-            verbs[i].set_tadoushi(line.substring(index1 + 1));
-            verbs[i].set_jidoushi("undefined");
+            verbs[count].set_tadoushi(tmp);
+            tmp = "";
           }
         }
-        System.out.println("--------------\n");
-        // verbs[i].set_translation(line.substring(index + 1, line.length()));
 
-        i++;
+        System.out.println("tmp : " + tmp);
+
+        System.out.println("------------\n");
+        count++;
+
       }
       reader.close();
     } catch (FileNotFoundException e){
@@ -68,34 +78,34 @@ class VerbDB{
     }
 
   }
-  
-  // ---見出しの検索---
-  public String[] search(String midashi){
 
-    String str[] = new String[2];
-    for(String x: str){
-      x = "";
-    }
+  // ---見出しの検索---
+  public String[] search(String midashi){ // 配列で返す
+
+    String str[] = {"undefined", "undefined"};  //[0]自動詞 [1]他動詞
+
+    System.out.println("-------search-------\n");
     for(Verb data: verbs){  // 拡張for文
       if((data.get_midashi().indexOf(midashi)) != -1){
+        System.out.println("str[0] " + data.get_jidoushi());
+        System.out.println("str[1] " + data.get_tadoushi());
         str[0] = data.get_jidoushi();
         str[1] = data.get_tadoushi();
 
         if(str[0] != "undefined"){
-          // System.out.println(str[0]);
+
+          // System.out.println("way1 : " + str[0]);
         }
         if(str[1] != "undefined"){
-          // System.out.println(str[1]);
+          // System.out.println("way2 : " + str[1]);
         }
         break;
       }
     }
-    if(str[0].length() == 0 && str[1].length() == 0)
-       System.out.println(midashi + " is not found.");
+    //if(str[0].length() == 0 && str[1].length() == 0)
+       // System.out.println(midashi + " is not found.");
 
     return str;
-
-
   }
 
   // ---見出しから自動詞検索---
@@ -109,7 +119,6 @@ class VerbDB{
     }
     return str;
   }
-  */
 
   // ---見出しから他動詞検索---
   public String search_tadoushi(String midashi){
