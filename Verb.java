@@ -5,14 +5,17 @@ class Verb{
 
   public void set_midashi(String midashi){
     this.midashi = midashi;
+    System.out.println(this.midashi);
   }
 
   public void set_jidoushi(String jidoushi){
     this.jidoushi = jidoushi;
+    System.out.println(this.jidoushi);
   }
 
   public void set_tadoushi(String tadoushi){
     this.tadoushi = tadoushi;
+    System.out.println(this.tadoushi);
   }
 
   public String get_midashi(){
