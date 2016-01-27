@@ -121,7 +121,7 @@ class VerbDB{
   public String search_tadoushi(String midashi){
     String str = "";
     System.out.println("\n-------searching tadoushi [" + midashi + "]-------\n");
-    
+
     for(int i = 0; i < this.verbs.length; i++){
       if(this.verbs[i].get_midashi().indexOf(midashi) == 0){
         System.out.println("match");
@@ -132,4 +132,42 @@ class VerbDB{
     }
     return str;
   }
+
+  // ---逆引き検索機能---
+  public String[] search_all(String doushi){
+    String midashi, jidoushi, tadoushi;
+    String[] out = new String[100];       // 返り値用配列
+    int count = 0;
+    int flag = 0;
+    for(int i = 0; i < this.verbs.length; i++){
+      midashi = this.verbs[i].get_midashi();
+      jidoushi = this.verbs[i].get_jidoushi();
+      tadoushi = this.verbs[i].get_tadoushi();
+
+      if(jidoushi.indexOf(doushi) != -1){ // 自動詞があった時
+        out[count] = midashi + " @自動詞 " + jidoushi;
+        flag = 1;
+
+      }
+
+      if(tadoushi.indexOf(doushi) != -1){ // 他動詞があった時
+        if(out[count].indexOf(midashi) == -1){  // 自動詞がない場合
+          out[count] = midashi + " @他動詞 " + tadoushi;
+          flag = 1;
+        } else {      // 自動詞他動詞の両方が存在するとき
+          out[count] = out[count] + " @他動詞 " + tadoushi;
+          flag = 1;
+        }
+      }
+
+      if(flag == 1){
+        count++;
+        flag = 0;
+      }
+
+    }
+    return out;
+  }
+
+
 }
